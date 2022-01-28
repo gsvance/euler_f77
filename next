@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+
+# Make the directory etc. for my next Project Euler problem
+# The original was the C version, this one is for F77
+
+next = 15
+next_line = 5  # line of this file with the variable 'next'
+next_file = "next"  # name of this python file
+
+import os
+
+# 3-digit number for problem
+num_str = str(next).zfill(3)
+
+# make new directory
+os.mkdir(num_str)
+
+# make new F77 source file
+with open(os.path.join(num_str, num_str + ".f"), "w") as f77:
+	program = 6 * ' ' + "program elr%s\n" % (num_str)
+	impnone = 6 * ' ' + "implicit none\n"
+	blank = 6 * ' ' + '\n'
+	f77.write(program + impnone + 3 * blank + "      stop\n      end\n")
+
+# write the new makefile
+with open(os.path.join(num_str, "Makefile"), "w") as make:
+	make.write("%s: %s.f\n\tgfortran %s.f -o %s" % tuple([num_str] * 4))
+
+# print message to the user
+print "Prepared the directory for Problem %d!" % (next)
+
+# update this file for the next time
+with open(next_file, "r") as self:
+	lines = self.readlines()
+lines[next_line] = "next = %d\n" % (next + 1)
+with open(next_file, "w") as self:
+	self.write("".join(lines))
+
